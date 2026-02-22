@@ -40,6 +40,17 @@ def build_huffman_tree(chars, freq):
 
     return root
 
+def generate_codes(node, prefix="", codes={}):
+    if node is None:
+        return 
+
+    if node.char is not None:
+        codes[node.char] = prefix 
+
+    generate_codes(node.left, prefix + "0", codes)
+    generate_codes(node.right, prefix + "1", codes)
+
+    return codes
 
 def get_frequency(content: str):
     freqs = {}
@@ -65,6 +76,9 @@ def main():
     root = build_huffman_tree(chars, freq)
 
     print(root)
+
+    codes = generate_codes(root)
+    print(codes)
 
 if __name__ ==  "__main__":
     main()
