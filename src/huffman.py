@@ -1,0 +1,70 @@
+import heapq 
+from dataclasses import dataclass 
+
+# alta freq -> menos bits
+# baixa freq -> mais bits
+
+
+@dataclass
+class Node:
+    char: str
+    freq: int
+    left = None 
+    right = None 
+
+    def __lt__(self, other):
+        return self.freq < other.freq 
+    
+
+def build_huffman_tree(chars, freq):
+    priority_tree = []
+
+    for char, f in zip(chars, freq):
+        node = Node(char, f)
+        priority_tree.append(node)
+
+    heapq.heapify(priority_tree)
+
+    while len(priority_tree) > 1:
+        left = heapq.heappop(priority_tree)
+        right = heapq.heappop(priority_tree)
+
+        parent = Node(None, left.freq + right.freq)
+
+        parent.left = left
+        parent.right = right 
+
+        heapq.heappush(priority_tree, parent)
+
+    root = priority_tree[0]
+
+    return root
+
+
+def get_frequency(content: str):
+    freqs = {}
+    for char in content:
+        if char in freqs:
+            freqs[char] += 1
+        else:
+            freqs[char] = 1
+
+    return freqs 
+
+
+def main():
+    texto = "aaaAAAbBBczz"
+
+    freqs = get_frequency(texto)
+
+    print(freqs)
+
+    chars = list(freqs.keys())
+    freq = list(freqs.values())
+
+    root = build_huffman_tree(chars, freq)
+
+    print(root)
+
+if __name__ ==  "__main__":
+    main()
