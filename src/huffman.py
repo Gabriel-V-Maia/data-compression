@@ -62,23 +62,42 @@ def get_frequency(content: str):
 
     return freqs 
 
+def compress(texto, codes):
+    bits = ""
+    for char in texto:
+        bits += codes[char]
+    return bits
+
+def decompress(bits, root):
+    resultado = ""
+    node = root
+    for bit in bits:
+        if bit == "0":
+            node = node.left
+        else:
+            node = node.right
+        
+        if node.char is not None:  
+            resultado += node.char
+            node = root  
+    return resultado
 
 def main():
     texto = "aaaAAAbBBczz"
-
     freqs = get_frequency(texto)
-
-    print(freqs)
-
     chars = list(freqs.keys())
     freq = list(freqs.values())
-
+    
     root = build_huffman_tree(chars, freq)
-
-    print(root)
-
     codes = generate_codes(root)
     print(codes)
+    
+    compressed = compress(texto, codes)
+    print(f"Original: {len(texto) * 8} bits")
+    print(f"Comprimido: {len(compressed)} bits")
+    print(compressed)
+
+    print(decompress(compressed, root))
 
 if __name__ ==  "__main__":
     main()
